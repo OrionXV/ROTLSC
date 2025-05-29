@@ -1,0 +1,34 @@
+name: Data preprocessing env builds (conda, python 3.10)
+
+on:
+  push:
+      branches:
+      - master
+  pull_request:
+      types: [opened, synchronize, reopened, ready_for_review, closed]
+      branches:
+      - master
+  schedule:
+      - cron: '0 0 * * 0'
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    if: github.event.pull_request.draft == false
+    strategy:
+      max-parallel: 5
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
+    - name: Add conda to system path
+      run: |
+        # $CONDA is an environment variable pointing to the root of the miniconda directory
+        echo $CONDA/bin >> $GITHUB_PATH
+    - name: Preprocessing env builds
+      run: |
+        conda env create -f environment.data_preprocessing.yml
