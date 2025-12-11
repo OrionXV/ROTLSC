@@ -7,7 +7,7 @@ please refer to the README.md.
 
 # mypy: disable-error-code="import-untyped"
 from uuid import uuid4
-
+import os
 import click
 import numpy as np
 from poli.core.exceptions import BudgetExhaustedException
@@ -139,6 +139,9 @@ def _main(
         print("Interrupted optimization.")
     except BudgetExhaustedException:
         print("Budget exhausted.")
+
+    out_dir = "./results/new_vae_10_chain_100_steps_with_stoch_sampling"
+    os.makedirs(out_dir, exist_ok=True) # not included in the OG repo so it fail to save results in a fresh clone. 
 
     np.save(f"./results/new_vae_10_chain_100_steps_with_stoch_sampling/{function_name}_{seed}.npy", solver.get_best_performance())
 
